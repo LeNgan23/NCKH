@@ -1,0 +1,54 @@
+Tại sao có 9 class?
+Vì khi đọc file JSON, trích xuất nhãn (label) trong file ta phân loại được 9 nhãn 
+
+Dữ liệu  được chia thành:
+1.494 ảnh huấn luyện (~80%)
+373 ảnh kiểm tra (validation) (~20%)
+
+🔹 47/47 → Số batch đã xử lý trên tổng số batch trong mỗi epoch (toàn bộ tập huấn luyện).
+🔹 44s 854ms/step → Thời gian để hoàn thành một epoch (~44.8 giây).
+🔹 accuracy → Độ chính xác (accuracy) trên tập huấn luyện sau epoch này.
+🔹 loss → Hàm mất mát (loss) trên tập huấn luyện sau epoch này.
+🔹 val_accuracy → Độ chính xác trên tập validation (dữ liệu chưa được dùng để train).
+🔹 val_loss → Hàm mất mát trên tập validation.
+
+Loss (Hàm mất mát)
+Loss trên tập huấn luyện (loss)
+Giá trị loss giảm dần từ 1.58 xuống 1.29, cho thấy mô hình đang học dần dần.
+Hàm mất mát là categorical crossentropy, thường dùng cho bài toán phân loại nhiều lớp.
+Loss trên tập validation (val_loss)
+Giá trị val_loss dao động không ổn định, có lúc giảm nhẹ nhưng sau đó lại tăng, từ 1.74 lên 1.81.
+Điều này có thể báo hiệu mô hình đang overfitting (quá khớp với dữ liệu huấn luyện nhưng không tổng quát tốt trên dữ liệu mới).
+
+Ý nghĩa:
+
+Nếu loss giảm mà val_loss tăng, có thể mô hình đang học quá chi tiết trên tập huấn luyện nhưng không tổng quát hóa tốt trên tập kiểm tra.
+Nếu cả hai cùng giảm, chứng tỏ mô hình đang học tốt và không bị overfitting.
+
+ Accuracy (Độ chính xác)
+Độ chính xác trên tập huấn luyện (accuracy)
+accuracy tăng dần từ 0.48 (48%) lên 0.65 (65%), cho thấy mô hình đang cải thiện.
+ Độ chính xác trên tập validation (val_accuracy)
+val_accuracy dao động từ 0.39 (39%) đến 0.43 (43%), không có sự cải thiện đáng kể.
+
+ Ý nghĩa:
+Nếu accuracy tăng nhưng val_accuracy không tăng, chứng tỏ mô hình đang bị overfitting.
+Nếu cả hai cùng tăng, chứng tỏ mô hình học tốt trên cả tập huấn luyện lẫn tập kiểm tra.
+
+Nhận xét về kết quả huấn luyện
+Mô hình đang học dần dần:
+Loss trên tập huấn luyện giảm, accuracy trên tập huấn luyện tăng.
+Điều này chứng tỏ mô hình có khả năng phân biệt dữ liệu trong tập huấn luyện.
+
+ Vấn đề gặp phải
+Overfitting:
+val_accuracy không tăng đáng kể trong khi accuracy trên tập huấn luyện vẫn tăng.
+val_loss dao động và có xu hướng tăng lên.
+
+Giải thích:
+Mô hình có thể đang học quá chi tiết trên tập huấn luyện, làm giảm khả năng tổng quát hóa trên dữ liệu mới.
+
+Độ chính xác của mô hình mlp không cao vì MLP (Multi-Layer Perceptron) chỉ hoạt động tốt với dữ liệu dạng vector
+MLP không tận dụng được thông tin không gian (spatial features) của ảnh.
+Ảnh X-quang có cấu trúc phức tạp, MLP sẽ không hiệu quả bằng CNN (Convolutional Neural Network).
+Cần điều chỉnh learning rate, batch size, regularization để giảm overfitting.
